@@ -1,2 +1,11 @@
 import "../css/style.css";
-console.log("feefs");
+import { createPlayfield, getGameDiv, deleteLogo } from "./domUtils.js";
+
+document.getElementById("start-btn").addEventListener("click", () => {
+  const gameDiv = getGameDiv();
+  const playfieldDiv = createPlayfield();
+
+  deleteLogo();
+  gameDiv.innerHTML = "";
+  gameDiv.appendChild(playfieldDiv);
+});

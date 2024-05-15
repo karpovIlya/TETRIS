@@ -28,3 +28,76 @@
     font-family: Akzidenz, system-ui, sans-serif;
   }
 }
+
+@layer components {
+  #app {
+    @apply py-2
+      min-h-svh
+      flex
+      flex-col
+      justify-center
+      items-center
+      bg-gradient-to-r
+      from-indigo-500 
+      via-purple-500
+      to-pink-500;
+  }
+
+  .logo {
+    @apply text-2xl
+      text-white
+      sm:text-4xl
+      md:text-6xl
+      font-bold
+      uppercase;
+  }
+
+  .button-primary {
+    @apply text-white
+      uppercase
+      bg-gradient-to-br
+      from-pink-500
+      to-orange-400
+      hover:bg-gradient-to-bl
+      focus:ring-4
+      focus:outline-none
+      focus:ring-pink-200
+      dark:focus:ring-pink-800
+      font-medium
+      rounded-lg
+      text-xl
+      px-5
+      py-2.5
+      text-center
+      me-2
+      mb-2;
+  }
+
+  .playfield {
+    @apply rounded-sm
+      bg-gradient-to-br
+      from-pink-500
+      to-orange-400
+      p-2
+      grid
+      grid-cols-10
+      grid-rows-20
+      gap-0.5;
+  }
+
+  .cell {
+    @apply bg-indigo-500
+      cell-size
+      rounded-sm;
+  }
+}
+
+@layer utilities {
+  .grid-rows-20 {
+    grid-template-rows: repeat(20, minmax(0, 1fr));
+  }
+  .cell-size {
+    height: min(4.5vh, 7.5vw);
+    width: min(4.5vh, 7.5vw);
+  }
+}
