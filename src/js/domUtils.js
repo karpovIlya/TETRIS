@@ -45,6 +45,9 @@ export const startGame = () => {
 
   window.addEventListener("keydown", (event) => {
     switch (event.key) {
+      case "ArrowUp":
+        tetris.rotateTetramino();
+        break;
       case "ArrowDown":
         tetris.moveTetraminoDown();
         break;
@@ -57,5 +60,5 @@ export const startGame = () => {
     }
   });
 
-  setInterval(() => tetris.moveTetraminoDown(), 500);
+  // setInterval(() => tetris.moveTetraminoDown(), 500);
 };

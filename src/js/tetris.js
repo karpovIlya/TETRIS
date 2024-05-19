@@ -1,6 +1,7 @@
 import { COLLUMN_AMOUNT, ROW_AMOUNT } from "./consts.js";
 import { addActiveCell, clearPlayfieldDiv } from "./domUtils.js";
 import { Tetramino } from "./tetramino.js";
+import { rotateMatrix } from "./utilities.js";
 
 export class Tetris {
   constructor() {
@@ -43,13 +44,13 @@ export class Tetris {
     );
   }
 
-  _isColideWithPass(moveTetraminoCol) {
+  _isColideWithPass(movedTetraminoCol) {
     for (let row = 0; row < this._currentTetramino.length; row++) {
       for (let col = 0; col < this._currentTetramino[row].length; col++) {
         if (!this._currentTetramino[row][col]) continue;
 
         const rowInPlayfield = row + this._currentTetraminoRow;
-        const colInPlayfield = col + moveTetraminoCol;
+        const colInPlayfield = col + movedTetraminoCol;
 
         if (this._tetrisPlayfield[rowInPlayfield][colInPlayfield] === 2) {
           return false;
@@ -81,6 +82,26 @@ export class Tetris {
     return (
       this._currentTetraminoRow + this._currentTetramino.length >= ROW_AMOUNT
     );
+  }
+
+  _isValidPositionAfterRotate(newTetramino, newRow, newCol) {
+    for (let row = 0; row < newTetramino.length; row++) {
+      for (let col = 0; col < newTetramino[row].length; col++) {
+        if (!newTetramino[row][col]) continue;
+
+        const rowInPlayfield = row + newRow;
+        const colInPlayfield = col + newCol;
+
+        if (
+          this._isOutsOfGameBoard(rowInPlayfield, colInPlayfield) ||
+          this._tetrisPlayfield[rowInPlayfield][colInPlayfield] === 2
+        ) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   _fillPostedTetramino() {
@@ -120,6 +141,22 @@ export class Tetris {
     if (isShouldPostTetramino) {
       this._updateTetramino();
       this._fillPostedTetramino();
+    }
+  }
+
+  rotateTetramino() {
+    const newTetramino = rotateMatrix(this._currentTetramino);
+
+    if (
+      this._isValidPositionAfterRotate(
+        newTetramino,
+        this._currentTetraminoRow,
+        this._currentTetraminoCol
+      )
+    ) {
+      this._currentTetramino = newTetramino;
+      this._clearPlayfield();
+      this.addTetraminoToPlayfield();
     }
   }
 
