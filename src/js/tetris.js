@@ -1,5 +1,10 @@
 import { COLLUMN_AMOUNT, ROW_AMOUNT } from "./consts.js";
-import { addActiveCell, clearPlayfieldDiv } from "./domUtils.js";
+import {
+  addActiveCell,
+  clearPlayfieldDiv,
+  startDeleteRowAnimation,
+  stopDeleteRowAnimation,
+} from "./domUtils.js";
 import { Tetramino } from "./tetramino.js";
 import { rotateMatrix } from "./utilities.js";
 
@@ -121,6 +126,39 @@ export class Tetris {
     this._currentTetraminoCol = this._tetraminoObj.getCurrentCollumn();
   }
 
+  _deleteAllFullFieledRows() {
+    let amountOfDeleteRows = 0;
+
+    for (let row = this._tetrisPlayfield.length - 1; row >= 0; row--) {
+      let fullFieledCounter = 0;
+
+      for (let col = 0; col < this._tetrisPlayfield[row].length; col++) {
+        const cell = this._tetrisPlayfield[row][col];
+
+        if (cell === 2) {
+          fullFieledCounter++;
+        }
+      }
+
+      if (fullFieledCounter === this._tetrisPlayfield[row].length) {
+        startDeleteRowAnimation(this._tetrisPlayfield, row);
+        this._tetrisPlayfield.splice(row, 1);
+
+        setTimeout(() => {
+          stopDeleteRowAnimation(this._tetrisPlayfield, row);
+        }, 1000);
+
+        amountOfDeleteRows++;
+      }
+    }
+
+    for (let i = 0; i < amountOfDeleteRows; i++) {
+      this._tetrisPlayfield.unshift(
+        new Array(this._tetrisPlayfield[0].length).fill(0)
+      );
+    }
+  }
+
   addTetraminoToPlayfield() {
     let isShouldPostTetramino = this._isColideWithPost();
 
@@ -141,6 +179,7 @@ export class Tetris {
     if (isShouldPostTetramino) {
       this._updateTetramino();
       this._fillPostedTetramino();
+      this._deleteAllFullFieledRows();
     }
   }
 

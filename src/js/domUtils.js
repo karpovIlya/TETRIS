@@ -1,6 +1,5 @@
 import { COLLUMN_AMOUNT, ROW_AMOUNT } from "./consts.js";
 import { Tetris } from "./tetris.js";
-import { Tetramino } from "./tetramino.js";
 
 const gameDiv = document.getElementById("game");
 
@@ -24,6 +23,20 @@ const createPlayfield = () => {
 export const addActiveCell = (rowIndex, colIndex) => {
   const activeCell = document.getElementById(`cell-${rowIndex}-${colIndex}`);
   activeCell.classList.add("cell-active");
+};
+
+export const startDeleteRowAnimation = (playfield, row) => {
+  playfield[row].forEach((_, collIndex) => {
+    const cell = document.getElementById(`cell-${row}-${collIndex}`);
+    cell.classList.add("animate-spin");
+  });
+};
+
+export const stopDeleteRowAnimation = (playfield, row) => {
+  playfield[row].forEach((_, collIndex) => {
+    const cell = document.getElementById(`cell-${row}-${collIndex}`);
+    cell.classList.remove("animate-spin");
+  });
 };
 
 export const clearPlayfieldDiv = () => {
@@ -60,5 +73,5 @@ export const startGame = () => {
     }
   });
 
-  // setInterval(() => tetris.moveTetraminoDown(), 500);
+  setInterval(() => tetris.moveTetraminoDown(), 500);
 };
