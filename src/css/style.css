@@ -90,6 +90,11 @@
       cell-size
       rounded-sm;
   }
+
+  .cell-active {
+    @apply bg-emerald-300
+      rounded-sm;
+  }
 }
 
 @layer utilities {
