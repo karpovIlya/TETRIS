@@ -4,6 +4,7 @@ import {
   clearPlayfieldDiv,
   startDeleteRowAnimation,
   stopDeleteRowAnimation,
+  stopGameDom,
 } from "./domUtils.js";
 import { Tetramino } from "./tetramino.js";
 import { rotateMatrix } from "./utilities.js";
@@ -36,6 +37,15 @@ export class Tetris {
     }
 
     this._fillPostedTetramino();
+  }
+
+  _stopGame() {
+    clearPlayfieldDiv();
+    for (let row = 0; row < this._tetrisPlayfield.length; row++) {
+      for (let col = 0; col < this._tetrisPlayfield[row].length; col++) {
+        this._tetrisPlayfield[row][col] = 0;
+      }
+    }
   }
 
   _isOutsOfGameBoard(rowInInPlayfield, colInInPlayfield) {
@@ -126,6 +136,16 @@ export class Tetris {
     this._currentTetraminoCol = this._tetraminoObj.getCurrentCollumn();
   }
 
+  _checkingLoss() {
+    const middleСolumn = COLLUMN_AMOUNT / 2 - 1;
+    const limitRow = 1;
+
+    if (this._tetrisPlayfield[limitRow][middleСolumn] === 2) {
+      this._stopGame();
+      stopGameDom();
+    }
+  }
+
   _deleteAllFullFieledRows() {
     let amountOfDeleteRows = 0;
 
@@ -146,7 +166,7 @@ export class Tetris {
 
         setTimeout(() => {
           stopDeleteRowAnimation(this._tetrisPlayfield, row);
-        }, 1000);
+        }, 500);
 
         amountOfDeleteRows++;
       }
@@ -180,6 +200,7 @@ export class Tetris {
       this._updateTetramino();
       this._fillPostedTetramino();
       this._deleteAllFullFieledRows();
+      this._checkingLoss();
     }
   }
 

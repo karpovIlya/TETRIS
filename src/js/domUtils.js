@@ -1,7 +1,9 @@
-import { COLLUMN_AMOUNT, ROW_AMOUNT } from "./consts.js";
+import { COLLUMN_AMOUNT, ROW_AMOUNT, FIGURES_INDEXES } from "./consts.js";
 import { Tetris } from "./tetris.js";
 
 const gameDiv = document.getElementById("game");
+const tetris = new Tetris();
+let movingIntervalId = 0;
 
 const createPlayfield = () => {
   const playfieldDiv = document.createElement("div");
@@ -18,6 +20,47 @@ const createPlayfield = () => {
   }
 
   return playfieldDiv;
+};
+
+const keydownHandler = (event) => {
+  switch (event.key) {
+    case "ArrowUp":
+      tetris.rotateTetramino();
+      break;
+    case "ArrowDown":
+      tetris.moveTetraminoDown();
+      break;
+    case "ArrowRight":
+      tetris.moveTetraminoRight();
+      break;
+    case "ArrowLeft":
+      tetris.moveTetraminoLeft();
+      break;
+  }
+};
+
+const startFallingTetramino = () => {
+  tetris.addTetraminoToPlayfield();
+  movingIntervalId = setInterval(() => tetris.moveTetraminoDown(), 500);
+};
+
+const stopFallingTetramino = () => {
+  clearInterval(movingIntervalId);
+  window.removeEventListener("keydown", keydownHandler);
+};
+
+const toggleEndGameAnimation = () => {
+  const cells = document.querySelectorAll(".cell");
+  cells.forEach((cell) => cell.classList.toggle("animate-spin"));
+};
+
+const drawFigureOnPlayfield = (figureIndexes) => {
+  figureIndexes.forEach((figureRow) => {
+    const rowInInPlayfield = figureRow[0];
+    const colInInPlayfield = figureRow[1];
+
+    addActiveCell(rowInInPlayfield, colInInPlayfield);
+  });
 };
 
 export const addActiveCell = (rowIndex, colIndex) => {
@@ -44,7 +87,7 @@ export const clearPlayfieldDiv = () => {
   cells.forEach((cell) => cell.classList.remove("cell-active"));
 };
 
-export const startGame = () => {
+export const startGameDom = () => {
   const playfieldDiv = createPlayfield();
   const logo = document.getElementById("logo");
 
@@ -52,26 +95,29 @@ export const startGame = () => {
   gameDiv.innerHTML = "";
   gameDiv.appendChild(playfieldDiv);
 
-  const tetris = new Tetris();
+  drawFigureOnPlayfield(FIGURES_INDEXES.threeDigitIndexes);
 
-  tetris.addTetraminoToPlayfield();
+  setTimeout(() => {
+    clearPlayfieldDiv();
+    drawFigureOnPlayfield(FIGURES_INDEXES.twoDigitIndexes);
+  }, 1000);
 
-  window.addEventListener("keydown", (event) => {
-    switch (event.key) {
-      case "ArrowUp":
-        tetris.rotateTetramino();
-        break;
-      case "ArrowDown":
-        tetris.moveTetraminoDown();
-        break;
-      case "ArrowRight":
-        tetris.moveTetraminoRight();
-        break;
-      case "ArrowLeft":
-        tetris.moveTetraminoLeft();
-        break;
-    }
-  });
+  setTimeout(() => {
+    clearPlayfieldDiv();
+    drawFigureOnPlayfield(FIGURES_INDEXES.oneDigitIndexes);
+  }, 2000);
 
-  setInterval(() => tetris.moveTetraminoDown(), 500);
+  setTimeout(() => {
+    clearPlayfieldDiv();
+    window.addEventListener("keydown", keydownHandler);
+    startFallingTetramino();
+  }, 3000);
+};
+
+export const stopGameDom = () => {
+  drawFigureOnPlayfield(FIGURES_INDEXES.sadSmileIndexes);
+  toggleEndGameAnimation();
+  setTimeout(toggleEndGameAnimation, 1000);
+
+  stopFallingTetramino();
 };

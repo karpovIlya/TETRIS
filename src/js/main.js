@@ -1,6 +1,16 @@
 import "../css/style.css";
-import { startGame } from "./domUtils.js";
+import { startGameDom } from "./domUtils.js";
 
 document.getElementById("start-btn").addEventListener("click", () => {
-  startGame();
+  startGameDom();
 });
+
+window.addEventListener(
+  "keydown",
+  (event) => {
+    if (event.key === "Enter") {
+      startGameDom();
+    }
+  },
+  { once: true }
+);
