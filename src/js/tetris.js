@@ -39,15 +39,6 @@ export class Tetris {
     this._fillPostedTetramino();
   }
 
-  _stopGame() {
-    clearPlayfieldDiv();
-    for (let row = 0; row < this._tetrisPlayfield.length; row++) {
-      for (let col = 0; col < this._tetrisPlayfield[row].length; col++) {
-        this._tetrisPlayfield[row][col] = 0;
-      }
-    }
-  }
-
   _isOutsOfGameBoard(rowInInPlayfield, colInInPlayfield) {
     return (
       colInInPlayfield < 0 ||
@@ -141,7 +132,7 @@ export class Tetris {
     const limitRow = 1;
 
     if (this._tetrisPlayfield[limitRow][middleСolumn] === 2) {
-      this._stopGame();
+      this.stopGame();
       stopGameDom();
     }
   }
@@ -176,6 +167,15 @@ export class Tetris {
       this._tetrisPlayfield.unshift(
         new Array(this._tetrisPlayfield[0].length).fill(0)
       );
+    }
+  }
+
+  stopGame() {
+    clearPlayfieldDiv();
+    for (let row = 0; row < this._tetrisPlayfield.length; row++) {
+      for (let col = 0; col < this._tetrisPlayfield[row].length; col++) {
+        this._tetrisPlayfield[row][col] = 0;
+      }
     }
   }
 

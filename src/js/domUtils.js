@@ -1,8 +1,8 @@
-import { COLLUMN_AMOUNT, ROW_AMOUNT, FIGURES_INDEXES } from "./consts.js";
+import { COLLUMN_AMOUNT, ROW_AMOUNT, SAD_SMILE_INDEX } from "./consts.js";
 import { Tetris } from "./tetris.js";
 
 const gameDiv = document.getElementById("game");
-const tetris = new Tetris();
+let tetris = new Tetris();
 let movingIntervalId = 0;
 
 const createPlayfield = () => {
@@ -20,6 +20,30 @@ const createPlayfield = () => {
   }
 
   return playfieldDiv;
+};
+
+const createAdditionalInfoDiv = () => {
+  const additionalDiv = document.createElement("div");
+  const smallLogo = document.createElement("h1");
+  const restartBtn = document.createElement("button");
+
+  additionalDiv.classList.add("additional");
+
+  smallLogo.id = "logo";
+  smallLogo.classList.add("logo");
+  smallLogo.classList.add("logo-small");
+  smallLogo.textContent = "[ TETRIS GAME ]";
+
+  restartBtn.classList.add("button-primary");
+  restartBtn.classList.add("mt-5");
+  restartBtn.textContent = "RESTART";
+
+  additionalDiv.appendChild(smallLogo);
+  additionalDiv.appendChild(restartBtn);
+
+  restartBtn.addEventListener("click", restartGameDom);
+
+  return additionalDiv;
 };
 
 const keydownHandler = (event) => {
@@ -87,35 +111,32 @@ export const clearPlayfieldDiv = () => {
   cells.forEach((cell) => cell.classList.remove("cell-active"));
 };
 
+export const restartGameDom = () => {
+  clearPlayfieldDiv();
+  stopFallingTetramino();
+
+  tetris = new Tetris();
+  startGameDom();
+};
+
 export const startGameDom = () => {
   const playfieldDiv = createPlayfield();
+  const additionalDiv = createAdditionalInfoDiv();
   const logo = document.getElementById("logo");
 
   logo.remove();
   gameDiv.innerHTML = "";
   gameDiv.appendChild(playfieldDiv);
+  gameDiv.appendChild(additionalDiv);
+  gameDiv.classList.add("running-game");
 
-  drawFigureOnPlayfield(FIGURES_INDEXES.threeDigitIndexes);
-
-  setTimeout(() => {
-    clearPlayfieldDiv();
-    drawFigureOnPlayfield(FIGURES_INDEXES.twoDigitIndexes);
-  }, 1000);
-
-  setTimeout(() => {
-    clearPlayfieldDiv();
-    drawFigureOnPlayfield(FIGURES_INDEXES.oneDigitIndexes);
-  }, 2000);
-
-  setTimeout(() => {
-    clearPlayfieldDiv();
-    window.addEventListener("keydown", keydownHandler);
-    startFallingTetramino();
-  }, 3000);
+  clearPlayfieldDiv();
+  window.addEventListener("keydown", keydownHandler);
+  startFallingTetramino();
 };
 
 export const stopGameDom = () => {
-  drawFigureOnPlayfield(FIGURES_INDEXES.sadSmileIndexes);
+  drawFigureOnPlayfield(SAD_SMILE_INDEX);
   toggleEndGameAnimation();
   setTimeout(toggleEndGameAnimation, 1000);
 
