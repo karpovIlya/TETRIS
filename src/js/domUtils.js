@@ -4,6 +4,7 @@ import { Tetris } from "./tetris.js";
 const gameDiv = document.getElementById("game");
 let tetris = new Tetris();
 let movingIntervalId = 0;
+let playfieldSwiper = null;
 
 const createPlayfield = () => {
   const playfieldDiv = document.createElement("div");
@@ -47,6 +48,8 @@ const createAdditionalInfoDiv = () => {
 };
 
 const keydownHandler = (event) => {
+  event.preventDefault();
+
   switch (event.key) {
     case "ArrowUp":
       tetris.rotateTetramino();
@@ -69,6 +72,10 @@ const startFallingTetramino = () => {
 };
 
 const stopFallingTetramino = () => {
+  playfieldSwiper.off("tap");
+  playfieldSwiper.off("swipeleft");
+  playfieldSwiper.off("swiperight");
+
   clearInterval(movingIntervalId);
   window.removeEventListener("keydown", keydownHandler);
 };
@@ -121,6 +128,7 @@ export const restartGameDom = () => {
 
 export const startGameDom = () => {
   const playfieldDiv = createPlayfield();
+  playfieldSwiper = new Hammer(playfieldDiv);
   const additionalDiv = createAdditionalInfoDiv();
   const logo = document.getElementById("logo");
 
@@ -131,7 +139,21 @@ export const startGameDom = () => {
   gameDiv.classList.add("running-game");
 
   clearPlayfieldDiv();
+
   window.addEventListener("keydown", keydownHandler);
+
+  playfieldSwiper.on("tap", () => {
+    tetris.rotateTetramino();
+  });
+
+  playfieldSwiper.on("swipeleft", () => {
+    tetris.moveTetraminoLeft();
+  });
+
+  playfieldSwiper.on("swiperight", () => {
+    tetris.moveTetraminoRight();
+  });
+
   startFallingTetramino();
 };
 

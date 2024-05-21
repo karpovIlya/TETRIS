@@ -1,5 +1,6 @@
 import "../css/style.css";
 import { startGameDom } from "./domUtils.js";
+import "hammerjs";
 
 document.getElementById("start-btn").addEventListener("click", () => {
   startGameDom();
